@@ -1,0 +1,49 @@
+<h1><%= pluralize(@boats.count, 'boat') %></h1>
+
+<h2>Test Results:</h2>
+
+<h3>::first_five; returns the first five Boats</h3>
+<% Boat.all.limit(4).each do |boat| %>
+  <%= boat.name %>, 
+<% end %>
+
+<h3>::dinghy; returns boats shorter than 20 feet</h3>
+<% Boat.where("length < 20").each do |boat| %>
+  <%= boat.name %>, 
+<% end %>
+
+<h3>::ship; returns boats 20 feet or longer</h3>
+<% Boat.where('length >= 20').each do |boat| %>
+  <%= boat.name %>, 
+<% end %>
+
+<h3>::last_three_alphabetically; returns last three boats in alphabetical order</h3>
+<% Boat.order(name: :desc).limit(3).each do |boat| %>
+  <%= boat.name %>, 
+<% end %>
+
+<h3>::without_a_captain; returns boats without a captain</h3>
+<%# Boat.where('captain_id IS NULL').each do |boat| %>
+<% Boat.where(captain_id: nil).each do |boat| %>
+  <%= boat.name %>, 
+<% end %>
+
+<h3>::sailboats; returns all boats that are sailboats</h3>
+<% Boat.includes(:classifications).where(classifications: {name: "Sailboat"}).each do |boat| %>
+  <%= boat.name %>, 
+<% end %>
+
+<h3>::non_sailboats; returns all boats that are not sailboats</h3>
+<% Boat.where("id NOT IN (?)", Boat.sailboats.pluck(:id)).each do |boat| %>
+  <%= boat.name %>, 
+<% end %>
+
+<h3>::with_three_classifications; returns boats with three classifications</h3>
+<% Boat.joins(:classifications).group("boats.id").having("COUNT(*) = 3").select("boats.*").each do |boat| %>
+  <%= boat.name %>, 
+<% end %>
+
+
+<% @boats.each do |boat| %>
+  <h3><%= link_to boat.name, boat %></h3>  
+<% end %>

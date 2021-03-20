@@ -1,0 +1,26 @@
+<h1><%= pluralize(@captains.count, 'captain') %></h1>
+
+<h3>::catamaran_operators; returns all captains of catamarans</h3>
+<% Captain.includes(boats: :classifications).where(classifications: {name: "Catamaran"}).each do |captain| %>
+  <%= captain.name %>, 
+<% end %>
+
+<h3>::sailors; returns captains with sailboats</h3>
+<% Captain.includes(boats: :classifications).where(classifications: {name: "Sailboat"}).distinct.each do |captain| %>
+  <%= captain.name %>, 
+<% end %>
+
+<h3>::motorboat_operators; returns captains with motorboats</h3>
+<% Captain.includes(boats: :classifications).where(classifications: {name: "Motorboat"}).distinct.each do |captain| %>
+  <%= captain.name %>, 
+<% end %>
+
+<h3>::talented_seafarers; returns captains of motorboats and sailboats</h3>
+<% Captain.where("id in (?)", Captain.sailors.pluck(:id) & Captain.motorboat_operators.pluck(:id)).each do |captain| %>
+  <%= captain.name %>, 
+<% end %>
+
+<h3>::non_sailors; returns people who are not captains of sailboats</h3>
+<% Captain.where.not("id IN (?)", Captain.sailors.pluck(:id)).each do |captain| %>
+  <%= captain.name %>, 
+<% end %>

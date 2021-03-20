@@ -1,0 +1,11 @@
+<h1>Classifications</h1>
+
+<h3>::my_all; returns all classifications</h3>
+<% Classification.all.each do |classification| %>
+  <%= classification.name %>, 
+<% end %>
+
+<h3>#longest; returns the classifications for the longest boat</h3>
+<% Boat.longest.classifications.each do |classification| %>
+  <%= classification.name %>, 
+<% end %>
